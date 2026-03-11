@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIU-Mart — Modern Fashion</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F9F5F0;
+    --dark: #1A1A1A;
+    --accent: #C8563A;
+    --mid: #6B6560;
+    --light: #E8E2DA;
+    --card: #FFFFFF;
+    --border: #DDD8D2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--dark); }
+
+  /* NAVBAR */
+  nav {
+    background: var(--dark);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 64px;
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; letter-spacing: 4px; cursor: pointer; }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: color 0.2s; }
+  .nav-links a:hover { color: white; }
+  .nav-right { display: flex; align-items: center; gap: 20px; }
+  .nav-icon { color: white; cursor: pointer; font-size: 1.2rem; position: relative; }
+  .cart-badge {
+    position: absolute; top: -6px; right: -8px;
+    background: var(--accent); color: white;
+    border-radius: 50%; width: 16px; height: 16px;
+    font-size: 0.6rem; display: flex; align-items: center; justify-content: center;
+  }
+  .search-box {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: white; padding: 6px 14px; border-radius: 20px; font-size: 0.8rem;
+    outline: none; width: 160px;
+  }
+  .search-box::placeholder { color: rgba(255,255,255,0.4); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #2C2826 0%, #4A3728 100%);
+    color: white; padding: 100px 40px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    min-height: 500px;
+  }
+  .hero-text h1 { font-family: 'Playfair Display', serif; font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; }
+  .hero-text p { color: rgba(255,255,255,0.7); font-size: 1rem; line-height: 1.7; margin-bottom: 32px; }
+  .hero-img { display: flex; gap: 16px; }
+  .hero-card {
+    background: rgba(255,255,255,0.1); border-radius: 12px;
+    padding: 20px; flex: 1; text-align: center; font-size: 0.8rem; color: rgba(255,255,255,0.6);
+  }
+  .hero-card .big-emoji { font-size: 3rem; margin-bottom: 8px; }
+  .hero-card .price { color: var(--accent); font-size: 1.1rem; font-weight: 600; }
+
+  /* BUTTONS */
+  .btn { display: inline-block; padding: 14px 32px; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; border: none; letter-spacing: 0.5px; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #B04A30; }
+  .btn-outline { background: transparent; color: white; border: 1px solid rgba(255,255,255,0.5); }
+  .btn-outline:hover { background: rgba(255,255,255,0.1); }
+  .btn-dark { background: var(--dark); color: white; }
+  .btn-dark:hover { background: #333; }
+  .btn-ghost { background: transparent; color: var(--dark); border: 1px solid var(--border); }
+  .btn-ghost:hover { background: var(--light); }
+
+  /* SECTION */
+  section { padding: 60px 40px; }
+  .section-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 36px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 2rem; }
+  .section-link { color: var(--accent); font-size: 0.85rem; cursor: pointer; text-decoration: underline; }
+
+  /* PRODUCT GRID */
+  .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  .product-card {
+    background: var(--card); border-radius: 8px; overflow: hidden;
+    border: 1px solid var(--border); transition: transform 0.2s, box-shadow 0.2s; cursor: pointer;
+  }
+  .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.1); }
+  .product-img {
+    width: 100%; height: 220px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem; position: relative;
+  }
+  .product-badge {
+    position: absolute; top: 12px; left: 12px;
+    background: var(--accent); color: white;
+    font-size: 0.7rem; padding: 3px 8px; border-radius: 3px; font-weight: 600;
+  }
+  .product-info { padding: 16px; }
+  .product-name { font-weight: 500; margin-bottom: 4px; font-size: 0.95rem; }
+  .product-brand { color: var(--mid); font-size: 0.8rem; margin-bottom: 10px; }
+  .product-footer { display: flex; justify-content: space-between; align-items: center; }
+  .product-price { font-weight: 600; font-size: 1rem; }
+  .product-old-price { color: var(--mid); text-decoration: line-through; font-size: 0.8rem; margin-left: 6px; }
+  /* INTENTIONAL UX ISSUE: add to cart is tiny and labeled "+" not "Add to Cart" */
+  .add-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--light); border: none; cursor: pointer;
+    font-size: 1rem; display: flex; align-items: center; justify-content: center;
+    color: var(--dark); transition: background 0.2s;
+  }
+  .add-btn:hover { background: var(--accent); color: white; }
+
+  /* BANNERS */
+  .banner-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+  .banner {
+    border-radius: 12px; padding: 40px;
+    display: flex; flex-direction: column; justify-content: flex-end; min-height: 200px;
+    color: white; cursor: pointer; position: relative; overflow: hidden;
+  }
+  .banner-1 { background: linear-gradient(135deg, #2D4A3E, #1A6B52); }
+  .banner-2 { background: linear-gradient(135deg, #4A2D3E, #6B1A4A); }
+  .banner h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 8px; }
+  .banner p { opacity: 0.8; font-size: 0.85rem; margin-bottom: 16px; }
+  .banner-emoji { position: absolute; top: 20px; right: 20px; font-size: 3.5rem; opacity: 0.5; }
+
+  /* PRODUCT DETAIL */
+  .product-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; padding: 60px 40px; }
+  .product-detail-img {
+    background: var(--light); border-radius: 12px;
+    height: 500px; display: flex; align-items: center; justify-content: center;
+    font-size: 8rem; position: relative;
+  }
+  .detail-badge {
+    position: absolute; top: 20px; left: 20px;
+    background: var(--accent); color: white;
+    font-size: 0.75rem; padding: 4px 10px; border-radius: 3px;
+  }
+  .detail-info { padding: 20px 0; }
+  .detail-brand { color: var(--mid); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .detail-name { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 16px; }
+  .detail-rating { color: #F5A623; font-size: 0.9rem; margin-bottom: 16px; }
+  .detail-price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 24px; }
+  .detail-price { font-size: 1.8rem; font-weight: 700; }
+  .detail-old { color: var(--mid); text-decoration: line-through; font-size: 1.1rem; }
+  .detail-section { margin-bottom: 24px; }
+  .detail-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--mid); margin-bottom: 10px; display: flex; justify-content: space-between; }
+  /* INTENTIONAL UX ISSUE: size guide link is tiny and subtle */
+  .size-guide-link { color: var(--accent); font-size: 0.75rem; cursor: pointer; text-decoration: underline; }
+  .size-options { display: flex; gap: 8px; }
+  .size-btn {
+    width: 44px; height: 44px; border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; cursor: pointer; border-radius: 4px; transition: all 0.2s;
+  }
+  .size-btn:hover, .size-btn.selected { background: var(--dark); color: white; border-color: var(--dark); }
+  .color-options { display: flex; gap: 10px; }
+  .color-dot { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: border 0.2s; }
+  .color-dot:hover, .color-dot.selected { border-color: var(--dark); }
+  /* INTENTIONAL UX ISSUE: qty control is very small and de-emphasized */
+  .qty-section { display: flex; align-items: center; gap: 8px; margin-bottom: 24px; }
+  .qty-label { font-size: 0.75rem; color: var(--mid); margin-right: 4px; }
+  .qty-btn { width: 24px; height: 24px; border: 1px solid var(--border); background: none; cursor: pointer; font-size: 0.9rem; }
+  .qty-display { width: 32px; text-align: center; font-size: 0.9rem; border: 1px solid var(--border); padding: 2px; }
+  .detail-actions { display: flex; gap: 12px; margin-bottom: 16px; }
+  .detail-actions .btn { flex: 1; text-align: center; padding: 16px; }
+  /* INTENTIONAL UX ISSUE: "Save" and "Wishlist" both exist - confusing */
+  .secondary-actions { display: flex; gap: 16px; font-size: 0.85rem; color: var(--mid); }
+  .secondary-actions span { cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .secondary-actions span:hover { color: var(--dark); }
+  .detail-desc { color: var(--mid); line-height: 1.7; font-size: 0.9rem; margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
+
+  /* BREADCRUMB */
+  .breadcrumb { padding: 16px 40px; color: var(--mid); font-size: 0.85rem; }
+  .breadcrumb span { cursor: pointer; }
+  .breadcrumb span:hover { color: var(--dark); }
+
+  /* CART PAGE */
+  .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 40px; padding: 40px; }
+  .cart-title { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 32px; }
+  .cart-item {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 20px; align-items: start; padding: 24px 0; border-bottom: 1px solid var(--border);
+  }
+  .cart-item-img {
+    width: 80px; height: 80px; background: var(--light); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+  }
+  .cart-item-info h4 { font-weight: 500; margin-bottom: 4px; }
+  .cart-item-info .meta { color: var(--mid); font-size: 0.85rem; margin-bottom: 8px; }
+  .cart-qty-row { display: flex; align-items: center; gap: 8px; margin-top: 8px; }
+  .cart-qty-btn { width: 28px; height: 28px; border: 1px solid var(--border); background: none; cursor: pointer; }
+  .cart-qty { padding: 4px 8px; border: 1px solid var(--border); text-align: center; width: 40px; }
+  .cart-remove { font-size: 0.8rem; color: var(--mid); cursor: pointer; text-decoration: underline; margin-top: 4px; display: block; }
+  .cart-item-price { font-weight: 600; text-align: right; }
+
+  /* ORDER SUMMARY */
+  .order-summary { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 28px; height: fit-content; }
+  .order-summary h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 24px; }
+  .summary-row { display: flex; justify-content: space-between; margin-bottom: 14px; font-size: 0.9rem; }
+  .summary-total { font-weight: 700; font-size: 1.1rem; padding-top: 14px; border-top: 1px solid var(--border); margin-top: 8px; }
+  /* INTENTIONAL UX ISSUE: promo code field is hidden in accordion */
+  .promo-accordion { margin: 16px 0; }
+  .promo-toggle { font-size: 0.8rem; color: var(--mid); cursor: pointer; display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .promo-fields { display: none; padding: 12px 0; gap: 8px; }
+  .promo-fields.open { display: flex; }
+  .promo-input { flex: 1; border: 1px solid var(--border); padding: 8px 12px; font-size: 0.85rem; }
+  .promo-apply { background: var(--dark); color: white; border: none; padding: 8px 14px; cursor: pointer; font-size: 0.8rem; }
+
+  /* CHECKOUT */
+  .checkout-layout { display: grid; grid-template-columns: 1fr 380px; gap: 40px; padding: 40px; }
+  .checkout-form h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 28px; }
+  .form-section { margin-bottom: 32px; }
+  .form-section h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--mid); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { margin-bottom: 16px; }
+  /* INTENTIONAL UX ISSUE: labels are short / ambiguous */
+  .form-group label { display: block; font-size: 0.8rem; color: var(--mid); margin-bottom: 6px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+    font-size: 0.9rem; background: white; outline: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--dark); }
+  /* INTENTIONAL UX ISSUE: checkout button says "Proceed" not "Place Order" */
+  .checkout-submit { width: 100%; padding: 18px; background: var(--accent); color: white; border: none; font-size: 1rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; margin-top: 16px; transition: background 0.2s; }
+  .checkout-submit:hover { background: #B04A30; }
+  .payment-options { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .payment-opt { border: 2px solid var(--border); padding: 10px 20px; cursor: pointer; font-size: 0.85rem; border-radius: 4px; transition: border 0.2s; }
+  .payment-opt.selected { border-color: var(--dark); background: var(--light); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
+    background: var(--dark); color: white; padding: 14px 28px; border-radius: 6px;
+    font-size: 0.9rem; z-index: 1000; transition: transform 0.3s ease;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SUCCESS */
+  .success-page { text-align: center; padding: 100px 40px; }
+  .success-page h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 16px; }
+  .success-page p { color: var(--mid); margin-bottom: 32px; }
+  .order-number { background: var(--light); display: inline-block; padding: 10px 24px; border-radius: 4px; font-size: 0.9rem; margin-bottom: 32px; }
+
+  /* CATALOG PAGE */
+  .catalog-header { padding: 40px 40px 0; display: flex; justify-content: space-between; align-items: center; }
+  .catalog-header h2 { font-family: 'Playfair Display', serif; font-size: 2rem; }
+  .filter-bar { display: flex; gap: 12px; padding: 20px 40px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+  .filter-tag { padding: 6px 16px; border: 1px solid var(--border); font-size: 0.8rem; cursor: pointer; border-radius: 20px; background: white; transition: all 0.2s; }
+  .filter-tag:hover, .filter-tag.active { background: var(--dark); color: white; border-color: var(--dark); }
+  /* INTENTIONAL UX ISSUE: Sort dropdown is labeled "Arrange" */
+  .sort-select { padding: 6px 14px; border: 1px solid var(--border); font-size: 0.8rem; background: white; font-family: 'DM Sans', sans-serif; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: none; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: white; border-radius: 8px; padding: 32px; max-width: 400px; width: 90%; }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 16px; }
+  .modal p { color: var(--mid); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+  .size-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .size-table th, .size-table td { border: 1px solid var(--border); padding: 8px; text-align: center; }
+  .size-table th { background: var(--light); }
+  .modal-close { float: right; cursor: pointer; font-size: 1.2rem; color: var(--mid); margin-top: -8px; }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: rgba(255,255,255,0.5); padding: 40px; text-align: center; font-size: 0.85rem; margin-top: 60px; }
+
+  @media (max-width: 900px) {
+    .product-grid { grid-template-columns: repeat(2,1fr); }
+    .hero { grid-template-columns: 1fr; }
+    .product-detail, .cart-layout, .checkout-layout { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">AIU-Mart</div>
+  <div class="nav-links">
+    <a onclick="showPage('catalog')">Women</a>
+    <a onclick="showPage('catalog')">Men</a>
+    <a onclick="showPage('catalog')">New Arrivals</a>
+    <a onclick="showPage('catalog')">Sale</a>
+    <!-- INTENTIONAL UX ISSUE: "Discover" is vague -->
+    <a onclick="showPage('catalog')">Discover</a>
+  </div>
+  <div class="nav-right">
+    <input class="search-box" type="text" placeholder="Search...">
+    <!-- INTENTIONAL UX ISSUE: cart count is small and hard to notice -->
+    <div class="nav-icon" onclick="showPage('cart')">
+      🛒
+      <span class="cart-badge" id="cartBadge">2</span>
+    </div>
+    <div class="nav-icon">👤</div>
+  </div>
+</nav>
+
+<!-- ============ HOME PAGE ============ -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <div class="hero-text">
+      <h1>Style That Speaks Without Words</h1>
+      <p>Discover curated fashion for the modern lifestyle. New collection every week — free shipping on all orders above ฿1,500.</p>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" onclick="showPage('catalog')">Shop Now</button>
+        <button class="btn btn-outline" onclick="showPage('catalog')">View Lookbook</button>
+      </div>
+    </div>
+    <div class="hero-img">
+      <div class="hero-card">
+        <div class="big-emoji">👗</div>
+        <div>Summer Collection</div>
+        <div class="price">from ฿890</div>
+      </div>
+      <div class="hero-card">
+        <div class="big-emoji">👟</div>
+        <div>Footwear</div>
+        <div class="price">from ฿1,290</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <section>
+    <div class="section-header">
+      <h2 class="section-title">Featured This Week</h2>
+      <span class="section-link" onclick="showPage('catalog')">View all →</span>
+    </div>
+    <div class="product-grid">
+      <div class="product-card" onclick="showPage('detail', 0)">
+        <div class="product-img" style="background:#F0EAE2;">
+          👗
+          <span class="product-badge">NEW</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Linen Wrap Dress</div>
+          <div class="product-brand">AIU-Mart Essentials</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,290 <span class="product-old-price">฿1,890</span></span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" onclick="showPage('detail', 1)">
+        <div class="product-img" style="background:#EAE8F0;">
+          🧥
+        </div>
+        <div class="product-info">
+          <div class="product-name">Oversized Blazer</div>
+          <div class="product-brand">AIU-Mart Studio</div>
+          <div class="product-footer">
+            <span class="product-price">฿2,490</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" onclick="showPage('detail', 2)">
+        <div class="product-img" style="background:#E2EAE0;">
+          👟
+          <span class="product-badge">SALE</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Canvas Sneakers</div>
+          <div class="product-brand">AIU-Mart Move</div>
+          <div class="product-footer">
+            <span class="product-price">฿990 <span class="product-old-price">฿1,490</span></span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" onclick="showPage('detail', 3)">
+        <div class="product-img" style="background:#EAE4E0;">
+          👜
+        </div>
+        <div class="product-info">
+          <div class="product-name">Tote Bag — Camel</div>
+          <div class="product-brand">AIU-Mart Accessories</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,790</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BANNERS -->
+  <section style="padding-top: 0;">
+    <div class="banner-grid">
+      <div class="banner banner-1" onclick="showPage('catalog')">
+        <span class="banner-emoji">🍃</span>
+        <h3>Sustainable Collection</h3>
+        <p>Made from 100% organic and recycled materials</p>
+        <button class="btn btn-outline" style="width:fit-content">Explore</button>
+      </div>
+      <div class="banner banner-2" onclick="showPage('catalog')">
+        <span class="banner-emoji">✨</span>
+        <h3>Up to 40% Off</h3>
+        <p>Limited time sale on selected items</p>
+        <button class="btn btn-outline" style="width:fit-content">Shop Sale</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE PRODUCTS -->
+  <section>
+    <div class="section-header">
+      <h2 class="section-title">You Might Also Like</h2>
+    </div>
+    <div class="product-grid">
+      <div class="product-card" onclick="showPage('detail', 4)">
+        <div class="product-img" style="background:#F0E8E8;">👒</div>
+        <div class="product-info">
+          <div class="product-name">Sun Hat — Beige</div>
+          <div class="product-brand">AIU-Mart Accessories</div>
+          <div class="product-footer">
+            <span class="product-price">฿690</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 1)">
+        <div class="product-img" style="background:#E8EEF0;">🧣</div>
+        <div class="product-info">
+          <div class="product-name">Merino Scarf</div>
+          <div class="product-brand">AIU-Mart Essentials</div>
+          <div class="product-footer">
+            <span class="product-price">฿890</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 2)">
+        <div class="product-img" style="background:#EEE8F0;">👔
+          <span class="product-badge">NEW</span>
+        </div>
+        <div class="product-info">
+          <div class="product-name">Linen Shirt — White</div>
+          <div class="product-brand">AIU-Mart Studio</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,190</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 3)">
+        <div class="product-img" style="background:#F0EEE8;">🩱</div>
+        <div class="product-info">
+          <div class="product-name">Swimsuit — Navy</div>
+          <div class="product-brand">AIU-Mart Move</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,490</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>© 2026 AIU-Mart — All rights reserved. | Contact: hello@aiumart.com | Returns & Exchanges | Privacy Policy</footer>
+</div>
+
+<!-- ============ CATALOG PAGE ============ -->
+<div class="page" id="page-catalog">
+  <div class="catalog-header">
+    <h2>All Products</h2>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <!-- INTENTIONAL UX ISSUE: Sort is labeled "Arrange By" -->
+      <label style="font-size:0.8rem; color:var(--mid);">Arrange By:</label>
+      <select class="sort-select">
+        <option>Most Popular</option>
+        <option>Price: Low</option>
+        <option>Price: High</option>
+        <option>Newest</option>
+      </select>
+    </div>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-tag active">All</span>
+    <span class="filter-tag">Women</span>
+    <span class="filter-tag">Men</span>
+    <span class="filter-tag">Accessories</span>
+    <span class="filter-tag">Shoes</span>
+    <span class="filter-tag">Sale</span>
+    <span class="filter-tag">New Arrivals</span>
+    <span class="filter-tag">Under ฿1,000</span>
+  </div>
+  <section>
+    <div class="product-grid">
+      <div class="product-card" onclick="showPage('detail', 0)">
+        <div class="product-img" style="background:#F0EAE2;">👗<span class="product-badge">NEW</span></div>
+        <div class="product-info">
+          <div class="product-name">Linen Wrap Dress</div>
+          <div class="product-brand">AIU-Mart Essentials</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,290 <span class="product-old-price">฿1,890</span></span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 1)">
+        <div class="product-img" style="background:#EAE8F0;">🧥</div>
+        <div class="product-info">
+          <div class="product-name">Oversized Blazer</div>
+          <div class="product-brand">AIU-Mart Studio</div>
+          <div class="product-footer">
+            <span class="product-price">฿2,490</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 2)">
+        <div class="product-img" style="background:#E2EAE0;">👟<span class="product-badge">SALE</span></div>
+        <div class="product-info">
+          <div class="product-name">Canvas Sneakers</div>
+          <div class="product-brand">AIU-Mart Move</div>
+          <div class="product-footer">
+            <span class="product-price">฿990 <span class="product-old-price">฿1,490</span></span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 3)">
+        <div class="product-img" style="background:#EAE4E0;">👜</div>
+        <div class="product-info">
+          <div class="product-name">Tote Bag — Camel</div>
+          <div class="product-brand">AIU-Mart Accessories</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,790</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 4)">
+        <div class="product-img" style="background:#F0E8E8;">👒</div>
+        <div class="product-info">
+          <div class="product-name">Sun Hat — Beige</div>
+          <div class="product-brand">AIU-Mart Accessories</div>
+          <div class="product-footer">
+            <span class="product-price">฿690</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 1)">
+        <div class="product-img" style="background:#E8EEF0;">🧣</div>
+        <div class="product-info">
+          <div class="product-name">Merino Scarf</div>
+          <div class="product-brand">AIU-Mart Essentials</div>
+          <div class="product-footer">
+            <span class="product-price">฿890</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 2)">
+        <div class="product-img" style="background:#EEE8F0;">👔<span class="product-badge">NEW</span></div>
+        <div class="product-info">
+          <div class="product-name">Linen Shirt — White</div>
+          <div class="product-brand">AIU-Mart Studio</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,190</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+      <div class="product-card" onclick="showPage('detail', 3)">
+        <div class="product-img" style="background:#F0EEE8;">🩱</div>
+        <div class="product-info">
+          <div class="product-name">Swimsuit — Navy</div>
+          <div class="product-brand">AIU-Mart Move</div>
+          <div class="product-footer">
+            <span class="product-price">฿1,490</span>
+            <button class="add-btn" onclick="event.stopPropagation(); addToCart()">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer>© 2026 AIU-Mart — All rights reserved.</footer>
+</div>
+
+<!-- ============ PRODUCT DETAIL PAGE ============ -->
+<div class="page" id="page-detail">
+  <div class="breadcrumb">
+    <span onclick="showPage('home')">Home</span> &rsaquo;
+    <span onclick="showPage('catalog')">Women</span> &rsaquo;
+    <span id="breadcrumb-name">Linen Wrap Dress</span>
+  </div>
+  <div class="product-detail">
+    <div>
+      <div class="product-detail-img" id="detail-img">
+        <span id="detail-emoji">👗</span>
+        <span class="detail-badge" id="detail-badge">NEW</span>
+      </div>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <div style="width:60px; height:60px; background:var(--light); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; cursor:pointer; border:2px solid var(--dark);" id="thumb-emoji">👗</div>
+        <div style="width:60px; height:60px; background:var(--light); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; cursor:pointer; opacity:0.5;">🏷️</div>
+        <div style="width:60px; height:60px; background:var(--light); border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:1.5rem; cursor:pointer; opacity:0.5;">📐</div>
+      </div>
+    </div>
+
+    <div class="detail-info">
+      <div class="detail-brand" id="detail-brand">AIU-Mart Essentials</div>
+      <h1 class="detail-name" id="detail-name">Linen Wrap Dress</h1>
+      <div class="detail-rating">★★★★☆ <span style="color:var(--mid); font-size:0.85rem;">(128 reviews)</span></div>
+      <div class="detail-price-row">
+        <span class="detail-price" id="detail-price">฿1,290</span>
+        <span class="detail-old" id="detail-old">฿1,890</span>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label">
+          <span>SIZE</span>
+          <!-- INTENTIONAL UX ISSUE: size guide is tiny -->
+          <span class="size-guide-link" onclick="openModal()">Size Guide</span>
+        </div>
+        <div class="size-options">
+          <div class="size-btn" onclick="selectSize(this)">XS</div>
+          <div class="size-btn" onclick="selectSize(this)">S</div>
+          <div class="size-btn selected" onclick="selectSize(this)">M</div>
+          <div class="size-btn" onclick="selectSize(this)">L</div>
+          <div class="size-btn" onclick="selectSize(this)">XL</div>
+          <!-- INTENTIONAL UX ISSUE: XXL is greyed out but looks the same as others -->
+          <div class="size-btn" style="opacity:0.35; cursor:not-allowed;">XXL</div>
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-label"><span>COLOR</span></div>
+        <div class="color-options">
+          <div class="color-dot selected" style="background:#C8956A;" title="Camel"></div>
+          <div class="color-dot" style="background:#4A5568;" title="Slate"></div>
+          <div class="color-dot" style="background:#E8D5B7;" title="Sand"></div>
+          <div class="color-dot" style="background:#2D3748;" title="Midnight"></div>
+        </div>
+      </div>
+
+      <!-- INTENTIONAL UX ISSUE: quantity control is de-emphasized and small -->
+      <div class="qty-section">
+        <span class="qty-label">Qty:</span>
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <input class="qty-display" id="qty-val" value="1" readonly>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+
+      <div class="detail-actions">
+        <button class="btn btn-dark" onclick="addToCartDetail()">Add to Bag</button>
+        <!-- INTENTIONAL UX ISSUE: "Add to Bag" vs standard "Add to Cart" -->
+        <button class="btn btn-ghost" onclick="showToast('Added to Wishlist ♡')">♡</button>
+      </div>
+
+      <!-- INTENTIONAL UX ISSUE: "Save for Later" AND "Add to Wishlist" both exist -->
+      <div class="secondary-actions">
+        <span onclick="showToast('Saved!')">🔖 Save for Later</span>
+        <span onclick="showToast('Added to Wishlist!')">♡ Add to Wishlist</span>
+        <span>📤 Share</span>
+      </div>
+
+      <div class="detail-desc">
+        <strong>Product Details</strong><br><br>
+        Crafted from 100% premium linen, this wrap dress offers a flattering silhouette for all body types.
+        Features an adjustable self-tie waist, V-neckline, and midi length. Perfect for casual outings or
+        dressed up for evening events.<br><br>
+        <strong>Care:</strong> Hand wash cold, hang dry.<br>
+        <strong>Material:</strong> 100% Linen<br>
+        <strong>Model:</strong> Wears size S, height 167cm
+      </div>
+    </div>
+  </div>
+  <footer>© 2026 AIU-Mart — All rights reserved.</footer>
+</div>
+
+<!-- ============ CART PAGE ============ -->
+<div class="page" id="page-cart">
+  <div style="padding: 40px 40px 0;">
+    <h2 class="cart-title">Your Bag <span style="font-size:1rem; color:var(--mid); font-family:'DM Sans',sans-serif; font-weight:400;">(2 items)</span></h2>
+  </div>
+  <div class="cart-layout">
+    <div>
+      <div class="cart-item">
+        <div class="cart-item-img">👗</div>
+        <div class="cart-item-info">
+          <h4>Linen Wrap Dress</h4>
+          <div class="meta">Color: Camel &nbsp;|&nbsp; Size: M</div>
+          <div class="cart-qty-row">
+            <button class="cart-qty-btn">−</button>
+            <input class="cart-qty" value="1" readonly>
+            <button class="cart-qty-btn">+</button>
+          </div>
+          <!-- INTENTIONAL UX ISSUE: remove is small text link, not a clear button -->
+          <span class="cart-remove" onclick="showToast('Item removed')">remove</span>
+        </div>
+        <div class="cart-item-price">฿1,290</div>
+      </div>
+
+      <div class="cart-item">
+        <div class="cart-item-img">👟</div>
+        <div class="cart-item-info">
+          <h4>Canvas Sneakers</h4>
+          <div class="meta">Color: White &nbsp;|&nbsp; Size: 38</div>
+          <div class="cart-qty-row">
+            <button class="cart-qty-btn">−</button>
+            <input class="cart-qty" value="1" readonly>
+            <button class="cart-qty-btn">+</button>
+          </div>
+          <span class="cart-remove" onclick="showToast('Item removed')">remove</span>
+        </div>
+        <div class="cart-item-price">฿990</div>
+      </div>
+
+      <div style="margin-top: 24px; display:flex; gap:12px;">
+        <button class="btn btn-ghost" onclick="showPage('catalog')">← Continue Shopping</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="order-summary">
+        <h3>Order Summary</h3>
+        <div class="summary-row"><span>Subtotal</span><span>฿2,280</span></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:green;">FREE</span></div>
+        <!-- INTENTIONAL UX ISSUE: tax info is vague -->
+        <div class="summary-row"><span style="color:var(--mid); font-size:0.8rem;">Est. Tax</span><span style="color:var(--mid); font-size:0.8rem;">TBD</span></div>
+
+        <div class="promo-accordion">
+          <!-- INTENTIONAL UX ISSUE: promo code is hidden in accordion -->
+          <div class="promo-toggle" onclick="togglePromo()">
+            <span>Have a promo code?</span><span id="promo-arrow">▸</span>
+          </div>
+          <div class="promo-fields" id="promo-fields">
+            <input class="promo-input" placeholder="Enter code">
+            <button class="promo-apply" onclick="showToast('Code applied!')">Apply</button>
+          </div>
+        </div>
+
+        <div class="summary-row summary-total"><span>Total</span><span>฿2,280</span></div>
+
+        <!-- INTENTIONAL UX ISSUE: button says "Proceed" not "Checkout" or "Place Order" -->
+        <button class="btn btn-primary" style="width:100%; padding:16px; margin-top:16px; font-size:1rem;" onclick="showPage('checkout')">Proceed</button>
+        <div style="text-align:center; font-size:0.75rem; color:var(--mid); margin-top:12px;">
+          🔒 Secure Checkout &nbsp;|&nbsp; Free Returns
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer>© 2026 AIU-Mart — All rights reserved.</footer>
+</div>
+
+<!-- ============ CHECKOUT PAGE ============ -->
+<div class="page" id="page-checkout">
+  <div class="breadcrumb">
+    <span onclick="showPage('cart')">Cart</span> &rsaquo; Checkout
+  </div>
+  <div class="checkout-layout">
+    <div class="checkout-form">
+      <h2>Checkout</h2>
+
+      <div class="form-section">
+        <h3>Contact</h3>
+        <!-- INTENTIONAL UX ISSUE: "Contact" field is ambiguous — email or phone? -->
+        <div class="form-group">
+          <label>Contact</label>
+          <input type="text" placeholder="Email or phone number">
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Delivery Address</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" placeholder="Given name">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" placeholder="Family name">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Address Line 1</label>
+          <input type="text" placeholder="House no., Street name">
+        </div>
+        <!-- INTENTIONAL UX ISSUE: "Address Line 2" is missing, no subdistrict field visible -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>City</label>
+            <input type="text" placeholder="">
+          </div>
+          <div class="form-group">
+            <label>Postcode</label>
+            <input type="text" placeholder="">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Province</label>
+          <select>
+            <option value="">Select province</option>
+            <option>Bangkok</option>
+            <option>Chiang Mai</option>
+            <option>Phuket</option>
+            <option>Saraburi</option>
+            <option>Nakhon Ratchasima</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Delivery Method</h3>
+        <!-- INTENTIONAL UX ISSUE: shipping options have confusing labels (no clear delivery dates) -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <label style="display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--border); cursor:pointer;">
+            <input type="radio" name="shipping" checked> Standard (3–5 days) — FREE
+          </label>
+          <label style="display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--border); cursor:pointer;">
+            <input type="radio" name="shipping"> Express — ฿150
+          </label>
+          <label style="display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--border); cursor:pointer;">
+            <!-- INTENTIONAL UX ISSUE: "Priority" shipping is not explained -->
+            <input type="radio" name="shipping"> Priority — ฿350
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h3>Payment</h3>
+        <div class="payment-options">
+          <div class="payment-opt selected" onclick="selectPayment(this)">Credit Card</div>
+          <div class="payment-opt" onclick="selectPayment(this)">PromptPay</div>
+          <div class="payment-opt" onclick="selectPayment(this)">Bank Transfer</div>
+          <div class="payment-opt" onclick="selectPayment(this)">COD</div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="grid-column: span 2;">
+            <label>Card Number</label>
+            <input type="text" placeholder="1234  5678  9012  3456">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <!-- INTENTIONAL UX ISSUE: expiry label just says "Expiry" not "MM/YY" -->
+            <label>Expiry</label>
+            <input type="text" placeholder="MM / YY">
+          </div>
+          <div class="form-group">
+            <label>CVV</label>
+            <input type="text" placeholder="•••">
+          </div>
+        </div>
+      </div>
+
+      <!-- INTENTIONAL UX ISSUE: final button says "Confirm Order" not "Place Order" or "Pay Now" -->
+      <button class="checkout-submit" onclick="showPage('success')">Confirm Order</button>
+      <div style="font-size:0.75rem; color:var(--mid); margin-top:10px; text-align:center;">
+        By placing your order you agree to AIU-Mart's Terms & Conditions and Privacy Policy
+      </div>
+    </div>
+
+    <!-- ORDER REVIEW SIDEBAR -->
+    <div>
+      <div class="order-summary" style="position:sticky; top:84px;">
+        <h3>Your Order</h3>
+        <div style="padding: 16px 0; border-bottom:1px solid var(--border); margin-bottom:16px;">
+          <div style="display:flex; gap:14px; align-items:center; margin-bottom:12px;">
+            <div style="width:50px;height:50px;background:var(--light);border-radius:6px;display:flex;align-items:center;justify-content:center;">👗</div>
+            <div style="flex:1; font-size:0.85rem;"><div>Linen Wrap Dress</div><div style="color:var(--mid);">M / Camel × 1</div></div>
+            <div style="font-weight:600; font-size:0.9rem;">฿1,290</div>
+          </div>
+          <div style="display:flex; gap:14px; align-items:center;">
+            <div style="width:50px;height:50px;background:var(--light);border-radius:6px;display:flex;align-items:center;justify-content:center;">👟</div>
+            <div style="flex:1; font-size:0.85rem;"><div>Canvas Sneakers</div><div style="color:var(--mid);">38 / White × 1</div></div>
+            <div style="font-weight:600; font-size:0.9rem;">฿990</div>
+          </div>
+        </div>
+        <div class="summary-row"><span>Subtotal</span><span>฿2,280</span></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:green;">FREE</span></div>
+        <div class="summary-row summary-total"><span>Total</span><span>฿2,280</span></div>
+      </div>
+    </div>
+  </div>
+  <footer>© 2026 AIU-Mart — All rights reserved.</footer>
+</div>
+
+<!-- ============ SUCCESS PAGE ============ -->
+<div class="page" id="page-success">
+  <div class="success-page">
+    <div style="font-size:4rem; margin-bottom:24px;">✅</div>
+    <h2>Order Confirmed!</h2>
+    <p>Thank you for your purchase. A confirmation has been sent to your email.</p>
+    <div class="order-number">Order #AIUMART-20260311-8842</div>
+    <div style="margin-bottom:32px; color:var(--mid); font-size:0.9rem;">
+      Estimated delivery: <strong>March 14–16, 2026</strong>
+    </div>
+    <button class="btn btn-dark" onclick="showPage('home')">Continue Shopping</button>
+  </div>
+  <footer>© 2026 AIU-Mart — All rights reserved.</footer>
+</div>
+
+<!-- SIZE GUIDE MODAL -->
+<div class="modal-overlay" id="sizeModal" onclick="closeModal(event)">
+  <div class="modal">
+    <span class="modal-close" onclick="document.getElementById('sizeModal').classList.remove('open')">✕</span>
+    <h3>Size Guide</h3>
+    <p>Measurements in centimeters. If between sizes, size up.</p>
+    <table class="size-table">
+      <tr><th>Size</th><th>Chest</th><th>Waist</th><th>Hips</th></tr>
+      <tr><td>XS</td><td>80–83</td><td>63–66</td><td>88–91</td></tr>
+      <tr><td>S</td><td>84–87</td><td>67–70</td><td>92–95</td></tr>
+      <tr><td>M</td><td>88–92</td><td>71–75</td><td>96–100</td></tr>
+      <tr><td>L</td><td>93–97</td><td>76–80</td><td>101–105</td></tr>
+      <tr><td>XL</td><td>98–103</td><td>81–86</td><td>106–111</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Added to bag!</div>
+
+<script>
+  let cartCount = 2;
+  let qty = 1;
+
+  const products = [
+    { name: "Linen Wrap Dress", brand: "AIU-Mart Essentials", emoji: "👗", price: "฿1,290", old: "฿1,890", badge: "NEW", bg: "#F0EAE2" },
+    { name: "Oversized Blazer", brand: "AIU-Mart Studio", emoji: "🧥", price: "฿2,490", old: "", badge: "", bg: "#EAE8F0" },
+    { name: "Canvas Sneakers", brand: "AIU-Mart Move", emoji: "👟", price: "฿990", old: "฿1,490", badge: "SALE", bg: "#E2EAE0" },
+    { name: "Tote Bag — Camel", brand: "AIU-Mart Accessories", emoji: "👜", price: "฿1,790", old: "", badge: "", bg: "#EAE4E0" },
+    { name: "Sun Hat — Beige", brand: "AIU-Mart Accessories", emoji: "👒", price: "฿690", old: "", badge: "", bg: "#F0E8E8" },
+  ];
+
+  function showPage(page, productId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo(0, 0);
+
+    if (page === 'detail' && productId !== undefined) {
+      const p = products[productId];
+      document.getElementById('detail-name').textContent = p.name;
+      document.getElementById('detail-brand').textContent = p.brand;
+      document.getElementById('detail-emoji').textContent = p.emoji;
+      document.getElementById('thumb-emoji').textContent = p.emoji;
+      document.getElementById('detail-price').textContent = p.price;
+      document.getElementById('detail-old').textContent = p.old;
+      document.getElementById('detail-img').style.background = p.bg;
+      document.getElementById('breadcrumb-name').textContent = p.name;
+      const badge = document.getElementById('detail-badge');
+      if (p.badge) { badge.textContent = p.badge; badge.style.display = ''; }
+      else { badge.style.display = 'none'; }
+      document.getElementById('qty-val').value = 1;
+      qty = 1;
+    }
+  }
+
+  function addToCart() {
+    cartCount++;
+    document.getElementById('cartBadge').textContent = cartCount;
+    showToast('Added to bag!');
+  }
+
+  function addToCartDetail() {
+    cartCount += qty;
+    document.getElementById('cartBadge').textContent = cartCount;
+    showToast('Added to bag!');
+  }
+
+  function changeQty(delta) {
+    qty = Math.max(1, qty + delta);
+    document.getElementById('qty-val').value = qty;
+  }
+
+  function selectSize(el) {
+    document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  function togglePromo() {
+    const fields = document.getElementById('promo-fields');
+    const arrow = document.getElementById('promo-arrow');
+    fields.classList.toggle('open');
+    arrow.textContent = fields.classList.contains('open') ? '▾' : '▸';
+  }
+
+  function selectPayment(el) {
+    document.querySelectorAll('.payment-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function openModal() {
+    document.getElementById('sizeModal').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('sizeModal')) {
+      document.getElementById('sizeModal').classList.remove('open');
+    }
+  }
+
+  // Filter tags
+  document.querySelectorAll('.filter-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tag').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
